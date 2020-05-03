@@ -243,4 +243,80 @@ void ImageEditor::cartoonMask(unsigned char *edgeptr, int edgeChannel, unsigned 
 	cartoonChannel = cartoon.spectrum();
 	memcpy(*ptr, cartoon.data(), cartoon.width()*cartoon.height()*cartoonChannel);
 }
+
+void ImageEditor::denoise(unsigned char **ptr, int &channel)
+{
+	CImg<unsigned char> denoised(img.width(),img.height(),1,3);
+	vector<int> tempVec;
+	addBorder();
+
+	cimg_forXY(denoised,x,y)
+	{
+		for (int i=0; i<3;i++)
+		{
+			//Create a temporary vector with the neighboor pixels
+			for (int k=0; k<3;k++)
+			{
+				for (int l=0; l<3;l++)
+				{
+					tempVec.push_back((int) border(x+k,y+l,0,i));
+				}
+			}
+			//Take the median of the vecor
+			sort(tempVec.begin(), tempVec.end());
+			denoised(x,y,0,i) = tempVec[(int)(tempVec.size()/2)];
+			tempVec.clear();
+		}
+	}
+
+	channel = denoised.spectrum();
+	memcpy(*ptr, denoised.data(),denoised.width()*denoised.height()*channel);
+}
+
+void ImageEditor::sharpener(unsigned char **ptr, int &channel, float intensity)
+{
+	CImg<unsigned char> sharpened(img.width(),img.height(),1,3);
+	addBorder();
+
+	int max = 0;
+	int min = 0;
+	int temp = 0;
+	int sharpenedpixel = 0;
+
+	for (int i=0; i<3;i++)
+	{
+		cimg_forXY(sharpened,x,y) //Sharpened Pixel based on the neighboors, current pixel = 1, neighboors = -1/9
+		{
+			temp = (int) abs ( - (border(x,y,0,i) - border(x,y+1,0,i) - border(x,y+2,0,i) -
+				border(x+1,y,0,i) + 9*border(x+1,y+1,0,i) - border(x+1,y+2,0,i) -
+				border(x+2,y,0,i) - border(x+2,y+1,0,i) - border(x+2,y+2,0,i) )/9 );
+
+			if (temp>max)
+			{
+				max = temp;
+			}
+			if (temp<min)
+			{
+				min = temp;
+			}
+		}
+		cimg_forXY(sharpened,x,y) //Populate Filter normalized
+		{
+			temp = (int) abs ( - (border(x,y,0,i) - border(x,y+1,0,i) - border(x,y+2,0,i) -
+				border(x+1,y,0,i) + 9*border(x+1,y+1,0,i) - border(x+1,y+2,0,i) -
+				border(x+2,y,0,i) - border(x+2,y+1,0,i) - border(x+2,y+2,0,i) )/9 );
+
+			sharpenedpixel = (int) (temp-min)*255/(max-min); // Normalize results to fall whithin the 0 to 255 range
+
+			//Implement sharpening filter intensity 0 to 1.
+			sharpened(x,y,0,i) = intensity*(sharpenedpixel)+(1-intensity)*img(x,y,0,i);
+		}
+		max = 0;
+		min = 0;
+		temp = 0;
+	}
+
+	channel = sharpened.spectrum();
+	memcpy(*ptr, sharpened.data(), sharpened.width()*sharpened.height()*channel);
+}
 }; // namespace imaging

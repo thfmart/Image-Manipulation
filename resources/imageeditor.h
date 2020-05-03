@@ -14,6 +14,7 @@ public:
 	CImg<unsigned char> grayBorder;
 	
 	ImageEditor(const char *filename, int width, int height);
+	~ImageEditor();
 	void convertGreyScale(unsigned char **ptr, int &channel);
 	void multiplyVectorByScalar(std::vector<float> *myVector, float scalar);
 	void applyBlur(unsigned char **ptr, int &channel);
@@ -23,6 +24,8 @@ public:
 	void applyHorSobel(unsigned char **ptr, int &sobelChannel);
 	void edgeMask(unsigned char **ptr, int &sobelChannel);
 	void cartoonMask(unsigned char *edgeptr, int edgeChannel, unsigned char **ptr, int &cartoonChannel);
+	void denoise(unsigned char **ptr, int &channel);
+	void sharpener(unsigned char **ptr, int &channel, float intensity);
 	
 private:
 	static const float REDSCALE = 0.2126;
