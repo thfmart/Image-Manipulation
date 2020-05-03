@@ -13,7 +13,7 @@ These are the functions defined in the 'ImageEditor' class.
 
 + **Background**: Replaces the background of the image given a mask
 + **Blur**: Performs a Average blur on the supplied image.
-+ *Ccartoonized**: Gives a cartoonized image
++ **Cartoonized**: Gives a cartoonized image
 + **Denoised**: Removes the noise from the image using an median filter
 + **Gray**: Convert image to gray scale
 + **Portrait**: Applies a Portrait effect, blurring the background
