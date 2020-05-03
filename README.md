@@ -8,6 +8,9 @@ Standart libraries from C++11 or higher. The project was developed using Dev-C++
 ## Requirements
 Standart libraries from C++11 or higher. The project was developed using Dev-C++ but you can test on other softwares
 
+## Usage
+Resulting images will be written on the assets/output folder
+
 ## Image Processing Functions
 These are the functions defined in the 'ImageEditor' class.
 
