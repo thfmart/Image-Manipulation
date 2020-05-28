@@ -5,9 +5,6 @@ This project has the tools to handle image files in C++ and process them.
 ## Requirements
 Standart libraries from C++11 or higher. The project was developed using Dev-C++ but you can test on other softwares
 
-## Requirements
-Standart libraries from C++11 or higher. The project was developed using Dev-C++ but you can test on other softwares
-
 ## Usage
 Resulting images will be written on the assets/output folder
 
